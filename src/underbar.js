@@ -51,14 +51,14 @@
     if(Array.isArray(collection)){
       for(var i = 0; i < collection.length; i++){
         iterator(collection[i], i, collection);
-      };
+      }
     } else {
       for(var key in collection){
       //   iterator(key);
       //Object.keys(collection).forEach(function (key) {
         iterator(collection[key], key, collection);
          // do something with key or value
-      };
+      }
     }
   };
 
@@ -80,7 +80,7 @@
   };
 
   // Return all elements of an array that pass a truth test.
-  _.filter = function(collection, test) {
+  _.filter = function(collection, test) {_
     var newArr = [];
     _.each(collection, function(item) {
       if(test(item)){
@@ -99,17 +99,55 @@ var evens = _.filter([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
 */
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
+    var result = [];
+    _.filter(collection, function(item) {
+      if(!test(item)) {
+        result.push(item);
+      }
+    });
+      return result;
+    // var newArr = [];
+    // _.each(collection, function(item) {
+    //   if(!test(item)){
+    //     newArr.push(item);
+    //   }
+    // });
+    // return newArr;
+  
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
   };
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
+      var result = [];
+      var wasFound;
+
+      _.each(array, function(arrayItem){
+        wasFound = _.indexOf(result, arrayItem);
+        if (wasFound === -1) {
+          result.push(arrayItem);
+        }
+  });
+  return result;
+
+    // for( var key in set){
+    //   newArr.push(set[key]);
+    // }
+
   };
 
 
   // Return the results of applying an iterator to each element.
   _.map = function(collection, iterator) {
+    var newArr = [];
+    if(Array.isArray(collection)){
+      for(var i = 0; i < collection.length; i++){
+        newArr.push(iterator(collection[i], i, collection));
+      }
+
+    }
+    return newArr;
     // map() is a useful primitive iteration function that works a lot
     // like each(), but in addition to running the operation on all
     // the members, it also maintains an array of results.
@@ -154,7 +192,28 @@ var evens = _.filter([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+      var noAccumulator = arguments.length < 3;
+        _.each(collection, function(item) {
+          if(noAccumulator) {
+            var accumulator = item;
+            noAccumulator = false;
+          } else {
+            accumulator = iterator(accumulator, item);
+          } 
+        });
+        return accumulator;
   };
+
+// _.reduce = function(collection, iterator, accumulator){
+//   var accumulatorUndefined = arguments.length < 3;
+//   _.each(collection, function(elem, index, collection){
+//     if(accumulatorUndefined) {
+//       accumulatorUndefined = false;
+//       accumulator = elem;
+//     } else accumulator = iterator(accumulator, elem, index, collection);
+//   });
+//   return accumulator;
+// };
 
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
