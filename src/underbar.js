@@ -195,7 +195,7 @@ var evens = _.filter([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
       var noAccumulator = arguments.length < 3;
         _.each(collection, function(item) {
           if(noAccumulator) {
-            var accumulator = item;
+            accumulator = item;
             noAccumulator = false;
           } else {
             accumulator = iterator(accumulator, item);
@@ -203,17 +203,6 @@ var evens = _.filter([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
         });
         return accumulator;
   };
-
-// _.reduce = function(collection, iterator, accumulator){
-//   var accumulatorUndefined = arguments.length < 3;
-//   _.each(collection, function(elem, index, collection){
-//     if(accumulatorUndefined) {
-//       accumulatorUndefined = false;
-//       accumulator = elem;
-//     } else accumulator = iterator(accumulator, elem, index, collection);
-//   });
-//   return accumulator;
-// };
 
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
@@ -231,12 +220,33 @@ var evens = _.filter([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    var check = iterator || _.identity;
+
+    if (collection.length === 0) {
+        return true;
+    }
+
+    // check if any are falsy
+
+    return _.reduce(collection, function (prev, next) {
+        if (!prev) {
+            return false;
+        } else {
+            return check(next) ? true : false;
+        }
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    let check = iterator || _.identity;
+                 //if every item fails test
+       return !(_.every(collection, function(item) {
+        return !(check(item)); 
+       }))
+
   };
 
 
@@ -259,11 +269,29 @@ var evens = _.filter([1, 2, 3, 4, 5, 6], function(num){ return num % 2 == 0; });
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    return _.reduce(arguments,function(a, e) {
+        for( var key in e){
+          if(!a[key]){
+            a[key] = key;
+          }
+          a[key] = e[key];
+        }
+      return a;
+    });
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+_.each(arguments, function(argObject) { //argObject = elements in argument 
+      _.each(argObject, function(value, key) {
+        if (obj[key] === undefined) {
+          obj[key] = value;
+        }
+      });
+    });
+    return obj;
+  
   };
 
 
