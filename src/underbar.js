@@ -394,7 +394,7 @@ _.each(arguments, function(argObject) { //argObject = elements in argument
 
   /**
    * ADVANCED
-   * =================
+   * =================nvok
    *
    * Note: This is the end of the pre-course curriculum. Feel free to continue,
    * but nothing beyond here is required.
@@ -403,6 +403,12 @@ _.each(arguments, function(argObject) { //argObject = elements in argument
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+      return _.map(collection, function(el) { 
+         return (functionOrKey instanceof Function) ? functionOrKey.apply(el, args) : el[functionOrKey].apply(el, args);
+      });
+
+  
+  
   };
 
   // Sort the object's values by a criterion produced by an iterator.
@@ -410,6 +416,12 @@ _.each(arguments, function(argObject) { //argObject = elements in argument
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    if (typeof(iterator) === 'function') {
+      return collection.sort(function(a,b) {return iterator(a)-iterator(b)});
+    } else {
+      return collection.sort(function(a,b) {return a[iterator]-b[iterator]});
+    }
+  
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -418,7 +430,17 @@ _.each(arguments, function(argObject) { //argObject = elements in argument
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
+    var sortedArray = [].sort.call(arguments, function(a, b) {return b.length - a.length});
+    var arr = [];
+     return _.reduce(sortedArray, function(a, element, index){
+      
+      arr.push(a[index] , element[index]);
+      console.log("arr "+arr + "element "+ element+ "index "+ index);
+      
+    });
+     return arr;
   };
+// ar names = ['moe', 'larry', 'curly'], ages = [30, 40, 50], leaders = [true];
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
   // The new array should contain all elements of the multidimensional array.
