@@ -335,6 +335,17 @@ _.each(arguments, function(argObject) { //argObject = elements in argument
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+     var storage = {};
+
+    return function() {
+      var arg = JSON.stringify(arguments);
+      if (!storage[arg]) {
+        storage[arg] = func.apply(this, arguments);
+      }
+
+      return storage[arg];
+    };
+
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -344,10 +355,19 @@ _.each(arguments, function(argObject) { //argObject = elements in argument
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
-  };
+    // var elements = arguments.slice(2);
+    // console.log(func, wait, elements);
+    // return setTimeout(func, wait) ;elem
+    
+    var args = Array.prototype.slice.call(arguments, 2);
 
+    setTimeout(function() {
+      func.apply(this, args);
+    }, wait);
+};
 
   /**
+
    * ADVANCED COLLECTION OPERATIONS
    * ==============================
    */
@@ -358,6 +378,17 @@ _.each(arguments, function(argObject) { //argObject = elements in argument
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+     var arrayCopy = Array.prototype.slice.call(array);
+
+    var results = [];
+
+    for (var i = 0; i < array.length; i++) {
+      var random = Math.floor(Math.random() * arrayCopy.length);
+      results.push(arrayCopy[random]);
+      arrayCopy.splice(random,1);
+    }
+
+    return results;
   };
 
 
